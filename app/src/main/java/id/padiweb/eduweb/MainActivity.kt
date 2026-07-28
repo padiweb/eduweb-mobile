@@ -11,17 +11,13 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,7 +32,7 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val APP_URL = "https://eduweb.smkaltansch.id"
+        const val APP_URL = "https://eduweb.smkaltan.sch.id"
     }
 
     private lateinit var webView: WebView
@@ -45,15 +41,12 @@ class MainActivity : AppCompatActivity() {
 
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var cameraImageUri: Uri? = null
-    private val handler = Handler(Looper.getMainLooper())
 
-    // Launcher untuk pilih file/foto
     private val fileChooserLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val data = result.data
-            val uri = data?.dataString?.let { Uri.parse(it) } ?: cameraImageUri
+            val uri = result.data?.data ?: cameraImageUri
             filePathCallback?.onReceiveValue(uri?.let { arrayOf(it) })
         } else {
             filePathCallback?.onReceiveValue(null)
@@ -75,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         requestPermissions()
         setupWebView()
 
-        // Warna pull-to-refresh sesuai brand EduWeb
         swipeRefresh.setColorSchemeColors(getColor(R.color.primary))
         swipeRefresh.setOnRefreshListener {
             webView.reload()
@@ -97,74 +89,67 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         webView.settings.apply {
-            javaScriptEnabled    = true
-            domStorageEnabled    = true
-            databaseEnabled      = true
-            allowFileAccess      = true
-            allowContentAccess   = true
-            setSupportZoom(true)
-            builtInZoomControls  = false
-            displayZoomControls  = false
+            javaScriptEnabled        = true
+            domStorageEnabled        = true
+            databaseEnabled          = true
+            allowFileAccess          = true
+            allowContentAccess       = true
+            setSupportZoom(false)
+            builtInZoomControls      = false
+            displayZoomControls      = false
             loadsImagesAutomatically = true
-            mixedContentMode     = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-            cacheMode            = WebSettings.LOAD_DEFAULT
-            geolocationEnabled   = true
-
-            // User agent - identifikasi sebagai EduWeb App
-            userAgentString = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 " +
-                "EduWebApp/1.0 Padiweb"
+            mixedContentMode         = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+            cacheMode                = WebSettings.LOAD_DEFAULT
+            userAgentString          = userAgentString +
+                " AltanEduWebApp/1.0 Padiweb"
         }
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
                 swipeRefresh.isRefreshing = false
             }
 
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?,
-                                          error: WebResourceError?) {
+            override fun onReceivedError(
+                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
+            ) {
                 if (request?.isForMainFrame == true) showOffline()
             }
 
-            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
-                                             error: android.net.http.SslError?) {
-                // Percayai SSL dari domain sendiri saja
-                if (view?.url?.contains("smkaltansch.id") == true) handler?.proceed()
+            override fun onReceivedSslError(
+                view: WebView?, handler: SslErrorHandler?, error: android.net.http.SslError?
+            ) {
+                if (view?.url?.contains("smkaltan.sch.id") == true) handler?.proceed()
                 else handler?.cancel()
             }
 
-            override fun shouldOverrideUrlLoading(view: WebView?,
-                                                   request: WebResourceRequest?): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?, request: WebResourceRequest?
+            ): Boolean {
                 val url = request?.url?.toString() ?: return false
-                // Buka link eksternal di browser biasa
-                if (!url.startsWith("https://eduweb.smkaltansch.id") &&
-                    !url.startsWith("about:") && !url.startsWith("blob:")) {
+                return if (!url.startsWith("https://eduweb.smkaltan.sch.id") &&
+                           !url.startsWith("about:") && !url.startsWith("blob:")) {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    return true
-                }
-                return false
+                    true
+                } else false
             }
         }
 
         webView.webChromeClient = object : WebChromeClient() {
-
-            // Handle upload file (foto bukti bayar, selfie absensi, dll)
-            override fun onShowFileChooser(webView: WebView?, callback: ValueCallback<Array<Uri>>?,
-                                            params: FileChooserParams?): Boolean {
+            override fun onShowFileChooser(
+                webView: WebView?,
+                callback: ValueCallback<Array<Uri>>?,
+                params: FileChooserParams?
+            ): Boolean {
                 filePathCallback = callback
-                val acceptTypes = params?.acceptTypes
-                val isImage = acceptTypes?.any { it.contains("image") } == true
-
+                val isImage = params?.acceptTypes?.any { it.contains("image") } == true
                 if (isImage) openImageChooser()
                 else fileChooserLauncher.launch(params?.createIntent())
-
                 return true
             }
 
-            // GPS permission dari web
-            override fun onGeolocationPermissionsShowPrompt(origin: String?,
-                                                             callback: GeolocationPermissions.Callback?) {
+            override fun onGeolocationPermissionsShowPrompt(
+                origin: String?, callback: GeolocationPermissions.Callback?
+            ) {
                 callback?.invoke(origin, true, false)
             }
 
@@ -173,15 +158,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // JavaScript bridge - web bisa deteksi ini app native
+        // Bridge JS agar web tahu ini native app
         webView.addJavascriptInterface(object : Any() {
-            @JavascriptInterface fun getAppInfo(): String =
-                """{"platform":"android","version":"${Build.VERSION.RELEASE}","isApp":true,"appVersion":"1.0.0"}"""
+            @JavascriptInterface
+            fun getAppInfo(): String =
+                """{"platform":"android","isApp":true,"appVersion":"1.0.0","appName":"AltanEduWeb"}"""
         }, "EduWebBridge")
     }
 
     private fun openImageChooser() {
-        // Intent kamera
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             val photoFile = createImageFile()
@@ -193,10 +178,7 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        // Intent galeri
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-
-        // Chooser: kamera atau galeri
         val chooser = Intent.createChooser(galleryIntent, "Pilih Foto")
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
         fileChooserLauncher.launch(chooser)
@@ -244,19 +226,7 @@ class MainActivity : AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun onResume() {
-        super.onResume()
-        webView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        webView.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        webView.stopLoading()
-        webView.destroy()
-    }
+    override fun onResume()  { super.onResume();  webView.onResume() }
+    override fun onPause()   { super.onPause();   webView.onPause() }
+    override fun onDestroy() { super.onDestroy(); webView.stopLoading(); webView.destroy() }
 }
