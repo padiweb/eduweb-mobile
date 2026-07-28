@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 filePathCallback = callback
                 val isImage = params?.acceptTypes?.any { it.contains("image") } == true
                 if (isImage) openImageChooser()
-                else fileChooserLauncher.launch(params?.createIntent())
+                else fileChooserLauncher.launch(params?.createIntent() ?: return true)
                 return true
             }
 
