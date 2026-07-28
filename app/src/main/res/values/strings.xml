@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Altan EduWeb</string>
+    <string name="offline_title">Tidak Ada Koneksi</string>
+    <string name="offline_message">Periksa koneksi WiFi atau data seluler Anda.</string>
+    <string name="retry">Coba Lagi</string>
+</resources>

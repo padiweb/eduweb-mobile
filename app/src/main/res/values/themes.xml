@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.EduWeb" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#2563eb</item>
+        <item name="colorPrimaryDark">#1e40af</item>
+        <item name="android:statusBarColor">#1e40af</item>
+    </style>
+</resources>
