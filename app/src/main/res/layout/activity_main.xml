@@ -3,31 +3,57 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <WebView android:id="@+id/webView"
+        <WebView
+            android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <LinearLayout android:id="@+id/offlineLayout"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:orientation="vertical" android:gravity="center"
-        android:padding="40dp" android:background="@android:color/white"
+
+    <!-- Tampilan saat offline -->
+    <LinearLayout
+        android:id="@+id/offlineLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="40dp"
+        android:background="@android:color/white"
         android:visibility="gone">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="&#128225;" android:textSize="64sp" android:layout_marginBottom="20dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/offline_title" android:textSize="20sp" android:textStyle="bold"
-            android:textColor="#0f172a" android:layout_marginBottom="10dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/offline_message" android:textSize="14sp"
-            android:textColor="#64748b" android:gravity="center" android:layout_marginBottom="32dp"/>
-        <Button android:id="@+id/retryButton"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/retry" android:backgroundTint="#2563eb"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&#128225;"
+            android:textSize="64sp"
+            android:layout_marginBottom="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/offline_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#0f172a"
+            android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/offline_message"
+            android:textSize="14sp"
+            android:textColor="#64748b"
+            android:gravity="center"
+            android:layout_marginBottom="32dp"/>
+        <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:backgroundTint="#2563eb"
             android:paddingHorizontal="32dp"/>
     </LinearLayout>
 </LinearLayout>
