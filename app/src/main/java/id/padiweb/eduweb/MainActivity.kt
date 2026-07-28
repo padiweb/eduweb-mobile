@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
             loadsImagesAutomatically = true
             mixedContentMode         = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             cacheMode                = WebSettings.LOAD_DEFAULT
+            mediaPlaybackRequiresUserGesture = false
             userAgentString          = userAgentString +
                 " AltanEduWebApp/1.0 Padiweb"
         }
@@ -157,9 +158,9 @@ class MainActivity : AppCompatActivity() {
                 callback?.invoke(origin, true, false)
             }
 
-            // Izinkan kamera dari web (WebRTC / getUserMedia)
+            // Grant kamera/mic untuk getUserMedia (prakerin selfie)
             override fun onPermissionRequest(request: android.webkit.PermissionRequest?) {
-                request?.grant(request.resources)
+                runOnUiThread { request?.grant(request.resources) }
             }
 
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
