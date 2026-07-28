@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.io.File
 import java.io.IOException
@@ -60,10 +63,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Edge-to-edge: konten mengisi layar penuh tapi WebView respek safe area
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         webView       = findViewById(R.id.webView)
         swipeRefresh  = findViewById(R.id.swipeRefresh)
         offlineLayout = findViewById(R.id.offlineLayout)
         val retryBtn: Button = findViewById(R.id.retryButton)
+
+        // Apply padding agar konten tidak tertimpa status bar & navigation bar
+        val rootView = findViewById<android.view.View>(R.id.rootLayout)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
+            insets
+        }
 
         requestPermissions()
         setupWebView()
