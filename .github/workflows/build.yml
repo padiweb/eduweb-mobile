@@ -2,10 +2,10 @@ name: Build APK & AAB
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master, main ]
     tags:
       - 'v*'
-  workflow_dispatch:  # Bisa trigger manual dari GitHub
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,32 +27,30 @@ jobs:
       - name: Grant execute permission untuk gradlew
         run: chmod +x gradlew
 
-      # ── Build DEBUG APK (untuk testing) ──────────────────────────
+      # ── Build DEBUG APK (setiap push) ────────────────────────────
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: altan-eduweb-debug
+          name: altan-eduweb-debug-${{ github.run_number }}
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 7
 
-      # ── Build RELEASE (hanya saat ada tag v*) ────────────────────
+      # ── Build RELEASE AAB (hanya saat tag v*) ────────────────────
+      - name: Decode Keystore
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
       - name: Build Release AAB
         if: startsWith(github.ref, 'refs/tags/v')
         env:
-          KEYSTORE_PATH: ${{ secrets.KEYSTORE_PATH }}
+          KEYSTORE_FILE: ${{ github.workspace }}/keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
-          ./gradlew bundleRelease \
-            -Pandroid.injected.signing.store.file=keystore.jks \
-            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
-            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
 
       - name: Upload Release AAB ke GitHub Releases
         if: startsWith(github.ref, 'refs/tags/v')
@@ -62,8 +60,10 @@ jobs:
           name: "Altan EduWeb ${{ github.ref_name }}"
           body: |
             ## Altan EduWeb ${{ github.ref_name }}
-            
+
             Aplikasi mobile EduWeb untuk SMK Alhikmah Tanon
-            
-            ### Download
-            - **AAB**: Upload ke Google Play Store
+
+            ### Cara Upload ke Play Store
+            1. Download file `.aab` di bawah
+            2. Buka Google Play Console
+            3. Upload AAB ke Production / Internal Testing
