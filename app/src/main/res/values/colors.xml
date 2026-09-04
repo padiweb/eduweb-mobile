@@ -5,5 +5,6 @@
     <color name="periwinkle">#C2CEFE</color>
     <color name="lavender">#EBEFFF</color>
     <color name="white">#FFFFFF</color>
-    <color name="ic_launcher_background">#3960FB</color>
+    <!-- Icon background tetap putih seperti semula -->
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

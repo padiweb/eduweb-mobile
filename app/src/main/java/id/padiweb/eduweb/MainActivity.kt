@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Biarkan sistem handle insets - pakai fitsSystemWindows di XML
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         webView       = findViewById(R.id.webView)
