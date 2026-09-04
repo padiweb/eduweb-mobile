@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         WindowCompat.setDecorFitsSystemWindows(window, true)
+        window.statusBarColor = getColor(R.color.primary_dark)
 
         webView       = findViewById(R.id.webView)
         swipeRefresh  = findViewById(R.id.swipeRefresh)
