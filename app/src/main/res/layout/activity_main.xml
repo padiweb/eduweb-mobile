@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootLayout"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
+    <!-- WebView area -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
@@ -13,47 +11,69 @@
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Tampilan saat offline -->
+    <!-- Halaman offline kustom -->
     <LinearLayout
         android:id="@+id/offlineLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="40dp"
-        android:background="@android:color/white"
+        android:padding="32dp"
+        android:background="@drawable/splash_background"
         android:visibility="gone">
+
+        <!-- Icon WiFi off -->
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="28dp">
+            <View
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/splash_logo_bg"/>
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_wifi_off"
+                android:contentDescription="Tidak ada koneksi"
+                android:colorFilter="#FFFFFF"/>
+        </FrameLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="&#128225;"
-            android:textSize="64sp"
-            android:layout_marginBottom="20dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/offline_title"
-            android:textSize="20sp"
+            android:text="Tidak Ada Koneksi"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#0f172a"
             android:layout_marginBottom="10dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/offline_message"
+            android:text="Periksa koneksi internet kamu\nlalu coba lagi"
+            android:textColor="#C2CEFE"
             android:textSize="14sp"
-            android:textColor="#64748b"
             android:gravity="center"
-            android:layout_marginBottom="32dp"/>
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="40dp"/>
+
         <Button
             android:id="@+id/retryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/retry"
-            android:backgroundTint="#2563eb"
-            android:paddingHorizontal="32dp"/>
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:text="Coba Lagi"
+            android:textColor="#3960FB"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:elevation="0dp"/>
+
     </LinearLayout>
-</LinearLayout>
+
+</FrameLayout>

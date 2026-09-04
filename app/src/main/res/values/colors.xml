@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#2563eb</color>
-    <color name="primary_dark">#1e40af</color>
-    <color name="white">#ffffff</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="primary">#3960FB</color>
+    <color name="primary_dark">#142258</color>
+    <color name="periwinkle">#C2CEFE</color>
+    <color name="lavender">#EBEFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="ic_launcher_background">#3960FB</color>
 </resources>

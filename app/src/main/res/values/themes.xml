@@ -7,4 +7,11 @@
         <item name="android:navigationBarColor">#ffffff</item>
         <item name="android:windowLightNavigationBar">true</item>
     </style>
+
+    <style name="Theme.EduWeb.Splash" parent="Theme.EduWeb">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:statusBarColor">#3960FB</item>
+        <item name="android:navigationBarColor">#142258</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
