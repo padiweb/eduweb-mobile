@@ -43,6 +43,15 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize"/>
 
+        <!-- Firebase FCM Service -->
+        <service
+            android:name=".FCMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <!-- FileProvider untuk upload foto/kamera -->
         <provider
             android:name="androidx.core.content.FileProvider"

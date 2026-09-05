@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         requestPermissions()
         setupWebView()
+        FCMService.createChannels(this)
 
         swipeRefresh.setColorSchemeColors(getColor(R.color.primary))
         swipeRefresh.setOnRefreshListener {
