@@ -24,6 +24,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.messaging.FirebaseMessaging
+import android.widget.Toast
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -72,6 +74,32 @@ class MainActivity : AppCompatActivity() {
         requestPermissions()
         setupWebView()
         FCMService.createChannels(this)
+
+        // Ambil FCM token dan tampilkan
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                // Simpan token
+                getSharedPreferences("eduweb_prefs", Context.MODE_PRIVATE)
+                    .edit().putString("fcm_token", token).apply()
+                // Tampilkan token di toast agar bisa di-copy
+                runOnUiThread {
+                    android.app.AlertDialog.Builder(this)
+                        .setTitle("FCM Token (untuk test notifikasi)")
+                        .setMessage(token)
+                        .setPositiveButton("Tutup", null)
+                        .setNeutralButton("Copy") { _, _ ->
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE)
+                                as android.content.ClipboardManager
+                            clipboard.setPrimaryClip(
+                                android.content.ClipData.newPlainText("FCM Token", token)
+                            )
+                            Toast.makeText(this, "Token di-copy!", Toast.LENGTH_SHORT).show()
+                        }
+                        .show()
+                }
+            }
+        }
 
         swipeRefresh.setColorSchemeColors(getColor(R.color.primary))
         swipeRefresh.setOnRefreshListener {
