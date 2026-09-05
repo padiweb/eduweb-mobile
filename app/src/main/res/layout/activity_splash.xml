@@ -8,28 +8,29 @@
 
     <!-- Lingkaran dekoratif atas kanan -->
     <View
-        android:layout_width="280dp"
-        android:layout_height="280dp"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
         android:background="@drawable/splash_circle"
-        android:alpha="0.08"
+        android:alpha="0.06"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="-80dp"
-        android:layout_marginEnd="-80dp"/>
+        android:layout_marginTop="-100dp"
+        android:layout_marginEnd="-100dp"/>
 
     <!-- Lingkaran dekoratif bawah kiri -->
     <View
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:background="@drawable/splash_circle"
-        android:alpha="0.06"
+        android:alpha="0.05"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="-60dp"
-        android:layout_marginStart="-60dp"/>
+        android:layout_marginBottom="-70dp"
+        android:layout_marginStart="-70dp"/>
 
-    <!-- Konten tengah -->
+    <!-- Konten utama tengah -->
     <LinearLayout
+        android:id="@+id/splashContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -39,69 +40,79 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Logo container -->
-        <FrameLayout
+        <!-- Logo tanpa lingkaran -->
+        <ImageView
             android:id="@+id/splashLogo"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginBottom="28dp">
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="Logo"/>
 
-            <!-- Background lingkaran putih semi-transparan -->
-            <View
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:background="@drawable/splash_logo_bg"/>
-
-            <!-- Logo sekolah -->
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/ic_launcher_round"
-                android:scaleType="centerCrop"
-                android:contentDescription="Logo Sekolah"/>
-        </FrameLayout>
-
-        <!-- Nama aplikasi -->
+        <!-- Nama aplikasi besar -->
         <TextView
             android:id="@+id/splashTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EduWeb"
+            android:text="Altan Mobile"
             android:textColor="#FFFFFF"
-            android:textSize="36sp"
+            android:textSize="34sp"
             android:textStyle="bold"
-            android:letterSpacing="0.05"
-            android:layout_marginBottom="4dp"/>
+            android:letterSpacing="0.02"
+            android:layout_marginBottom="6dp"/>
 
-        <!-- Nama sekolah -->
+        <!-- Garis pemisah tipis -->
+        <View
+            android:id="@+id/splashDivider"
+            android:layout_width="40dp"
+            android:layout_height="2dp"
+            android:background="#60FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Sub judul -->
         <TextView
             android:id="@+id/splashSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SMK Alhikmah Tanon"
+            android:text="EduWeb SMK Alhikmah Tanon"
             android:textColor="#C2CEFE"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            android:letterSpacing="0.02"
-            android:layout_marginBottom="8dp"/>
+            android:textSize="13sp"
+            android:letterSpacing="0.01"
+            android:gravity="center"/>
 
     </LinearLayout>
 
-    <!-- Tagline di bawah -->
-    <TextView
+    <!-- Loading dots di bawah -->
+    <LinearLayout
         android:id="@+id/splashTagline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sistem Informasi Manajemen Sekolah"
-        android:textColor="#ffffff"
-        android:textSize="11sp"
-        android:alpha="0.5"
-        android:letterSpacing="0.08"
-        android:textAllCaps="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="56dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="48dp"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/splash_circle"
+            android:alpha="0.8"
+            android:layout_marginEnd="6dp"/>
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/splash_circle"
+            android:alpha="0.4"
+            android:layout_marginEnd="6dp"/>
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/splash_circle"
+            android:alpha="0.4"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

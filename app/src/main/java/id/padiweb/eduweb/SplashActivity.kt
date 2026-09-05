@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 
@@ -17,58 +18,80 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        // Tampilan edge-to-edge tanpa menutupi status bar dan nav bar
+        // Status bar transparan di atas gradient
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
 
         val logo     = findViewById<View>(R.id.splashLogo)
         val title    = findViewById<View>(R.id.splashTitle)
+        val divider  = findViewById<View>(R.id.splashDivider)
         val subtitle = findViewById<View>(R.id.splashSubtitle)
         val tagline  = findViewById<View>(R.id.splashTagline)
 
-        // Set initial state
-        logo.alpha     = 0f; logo.scaleX     = 0.5f; logo.scaleY     = 0.5f
-        title.alpha    = 0f; title.translationY    = 40f
-        subtitle.alpha = 0f; subtitle.translationY = 40f
+        // Initial state
+        logo.alpha     = 0f; logo.scaleX     = 0.6f; logo.scaleY     = 0.6f
+        title.alpha    = 0f; title.translationY    = 30f
+        divider.alpha  = 0f; divider.scaleX        = 0f
+        subtitle.alpha = 0f; subtitle.translationY = 20f
         tagline.alpha  = 0f
 
         // Animasi logo
-        val logoAlpha  = ObjectAnimator.ofFloat(logo, "alpha", 0f, 1f).setDuration(600)
-        val logoScaleX = ObjectAnimator.ofFloat(logo, "scaleX", 0.5f, 1f).setDuration(700)
-        val logoScaleY = ObjectAnimator.ofFloat(logo, "scaleY", 0.5f, 1f).setDuration(700)
-        logoScaleX.interpolator = AccelerateDecelerateInterpolator()
-        logoScaleY.interpolator = AccelerateDecelerateInterpolator()
+        val logoAnim = AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(logo, "alpha", 0f, 1f).setDuration(500),
+                ObjectAnimator.ofFloat(logo, "scaleX", 0.6f, 1f).setDuration(600),
+                ObjectAnimator.ofFloat(logo, "scaleY", 0.6f, 1f).setDuration(600)
+            )
+            interpolator = DecelerateInterpolator()
+            startDelay = 150
+        }
 
-        val logoSet = AnimatorSet()
-        logoSet.playTogether(logoAlpha, logoScaleX, logoScaleY)
-        logoSet.startDelay = 200
+        // Animasi title
+        val titleAnim = AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(title, "alpha", 0f, 1f).setDuration(450),
+                ObjectAnimator.ofFloat(title, "translationY", 30f, 0f).setDuration(450)
+            )
+            interpolator = AccelerateDecelerateInterpolator()
+            startDelay = 550
+        }
 
-        // Animasi teks
-        val titleAlpha = ObjectAnimator.ofFloat(title, "alpha", 0f, 1f).setDuration(500)
-        val titleY     = ObjectAnimator.ofFloat(title, "translationY", 40f, 0f).setDuration(500)
-        val titleSet   = AnimatorSet()
-        titleSet.playTogether(titleAlpha, titleY)
-        titleSet.startDelay = 700
+        // Animasi divider
+        val dividerAnim = AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(divider, "alpha", 0f, 1f).setDuration(400),
+                ObjectAnimator.ofFloat(divider, "scaleX", 0f, 1f).setDuration(400)
+            )
+            startDelay = 750
+        }
 
-        val subtitleAlpha = ObjectAnimator.ofFloat(subtitle, "alpha", 0f, 1f).setDuration(500)
-        val subtitleY     = ObjectAnimator.ofFloat(subtitle, "translationY", 40f, 0f).setDuration(500)
-        val subtitleSet   = AnimatorSet()
-        subtitleSet.playTogether(subtitleAlpha, subtitleY)
-        subtitleSet.startDelay = 900
+        // Animasi subtitle
+        val subtitleAnim = AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(subtitle, "alpha", 0f, 1f).setDuration(400),
+                ObjectAnimator.ofFloat(subtitle, "translationY", 20f, 0f).setDuration(400)
+            )
+            startDelay = 900
+        }
 
-        val taglineAnim = ObjectAnimator.ofFloat(tagline, "alpha", 0f, 1f).setDuration(600)
-        taglineAnim.startDelay = 1200
+        // Animasi loading dots
+        val taglineAnim = ObjectAnimator.ofFloat(tagline, "alpha", 0f, 1f).apply {
+            duration = 500
+            startDelay = 1200
+        }
 
-        // Jalankan semua animasi
-        logoSet.start()
-        titleSet.start()
-        subtitleSet.start()
+        // Jalankan semua
+        logoAnim.start()
+        titleAnim.start()
+        dividerAnim.start()
+        subtitleAnim.start()
         taglineAnim.start()
 
-        // Pindah ke MainActivity setelah 2.8 detik
+        // Pindah ke MainActivity
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
-        }, 2800)
+        }, 2600)
     }
 }

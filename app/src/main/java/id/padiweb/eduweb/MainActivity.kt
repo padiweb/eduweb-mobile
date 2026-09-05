@@ -117,7 +117,25 @@ class MainActivity : AppCompatActivity() {
             override fun onReceivedError(
                 view: WebView?, request: WebResourceRequest?, error: WebResourceError?
             ) {
-                if (request?.isForMainFrame == true) showOffline()
+                if (request?.isForMainFrame == true) {
+                    // Hentikan loading agar halaman error Chrome tidak muncul
+                    view?.stopLoading()
+                    view?.loadUrl("about:blank")
+                    showOffline()
+                }
+            }
+
+            override fun onReceivedHttpError(
+                view: WebView?, request: WebResourceRequest?,
+                errorResponse: WebResourceResponse?
+            ) {
+                // Hanya tampilkan offline jika main frame error berat
+                val code = errorResponse?.statusCode ?: 0
+                if (request?.isForMainFrame == true && code >= 500) {
+                    view?.stopLoading()
+                    view?.loadUrl("about:blank")
+                    showOffline()
+                }
             }
 
             override fun onReceivedSslError(
