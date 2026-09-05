@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.messaging.FirebaseMessaging
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -43,6 +44,12 @@ class MainActivity : AppCompatActivity() {
 
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var cameraImageUri: Uri? = null
+
+    // Token FCM didapat async (bisa sebelum/sesudah halaman selesai dimuat), dan
+    // perlu dikirim ulang ke server tiap ganti halaman supaya token yang sama
+    // ter-assign ke akun yang benar-benar sedang login (lihat submitFcmToken()).
+    private var fcmToken: String? = null
+    private var pageLoaded = false
 
     private val fileChooserLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -78,8 +85,10 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
+                fcmToken = token
                 getSharedPreferences("eduweb_prefs", Context.MODE_PRIVATE)
                     .edit().putString("fcm_token", token).apply()
+                if (pageLoaded) submitFcmToken()
             }
         }
 
@@ -97,8 +106,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (isOnline()) webView.loadUrl(APP_URL)
+        if (isOnline()) webView.loadUrl(targetUrlFrom(intent) ?: APP_URL)
         else showOffline()
+    }
+
+    // Notifikasi ditekan sementara app sudah berjalan (singleTask) -> lewat sini,
+    // bukan onCreate lagi.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val url = targetUrlFrom(intent) ?: return
+        if (::webView.isInitialized) webView.loadUrl(url)
+    }
+
+    private fun targetUrlFrom(intent: Intent?): String? {
+        val url = intent?.getStringExtra("target_url") ?: return null
+        return if (url.startsWith(APP_URL)) url else null
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -123,6 +146,8 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 swipeRefresh.isRefreshing = false
+                pageLoaded = true
+                submitFcmToken()
             }
 
             override fun onReceivedError(
@@ -203,6 +228,15 @@ class MainActivity : AppCompatActivity() {
             fun getAppInfo(): String =
                 """{"platform":"android","isApp":true,"appVersion":"1.0.0","appName":"AltanEduWeb"}"""
         }, "EduWebBridge")
+    }
+
+    // Kirim token FCM ke web (lewat JS) supaya web yang POST ke server EduWeb —
+    // fungsi JS-nya (window.__submitFcmToken) cuma ada di halaman yang sudah login,
+    // jadi di halaman login/publik ini otomatis no-op.
+    private fun submitFcmToken() {
+        val token = fcmToken ?: return
+        val js = "if (window.__submitFcmToken) { window.__submitFcmToken(${JSONObject.quote(token)}); }"
+        webView.evaluateJavascript(js, null)
     }
 
     private fun openImageChooser() {

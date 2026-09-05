@@ -32,7 +32,7 @@ class FCMService : FirebaseMessagingService() {
             else          -> CHANNEL_ID
         }
 
-        showNotification(this, title, body, channelId)
+        showNotification(this, title, body, channelId, remoteMessage.data["url"])
     }
 
     override fun onNewToken(token: String) {
@@ -76,7 +76,8 @@ class FCMService : FirebaseMessagingService() {
             context: Context,
             title: String,
             body: String,
-            channelId: String = CHANNEL_ID
+            channelId: String = CHANNEL_ID,
+            targetUrl: String? = null
         ) {
             createChannels(context)
 
@@ -85,6 +86,7 @@ class FCMService : FirebaseMessagingService() {
 
             val intent = Intent(context, MainActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                if (!targetUrl.isNullOrBlank()) putExtra("target_url", targetUrl)
             }
             val pendingIntent = PendingIntent.getActivity(
                 context,
